@@ -1,4 +1,4 @@
-// summeriser. — utils.js (UNCHANGED)
+
 
 const STORAGE_KEYS = {
     THEME: 'summarizer-theme',
