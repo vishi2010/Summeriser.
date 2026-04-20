@@ -1,4 +1,4 @@
-/* summeriser. — popup.css (UNCHANGED) */
+
 
 *,
 *::before,
@@ -6,7 +6,6 @@
   box-sizing: border-box;
 }
 
-/* ----- Light theme: white + orange ----- */
 :root,
 :root[data-theme="light"] {
   --bg: #ffffff;
