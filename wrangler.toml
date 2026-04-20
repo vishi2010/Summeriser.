@@ -2,13 +2,7 @@ name = "summerizer-proxy"
 main = "index.js"
 compatibility_date = "2024-01-01"
 
-# KV namespace for rate limiting
-# After running `wrangler kv:namespace create RATE_LIMIT_KV`
-# paste the returned id below
 [[kv_namespaces]]
-binding = "RATE_LIMIT_KV"
+binding = "PUT_YOUR_BINDING_NAME_HERE"
 id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
 
-# Secrets (set via CLI, NEVER put real values here):
-#   wrangler secret put GROQ_API_KEY
-#   wrangler secret put EXTENSION_ID
