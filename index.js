@@ -1,22 +1,4 @@
-/**
- * summerizer. — Cloudflare Worker API Proxy
- *
- * SETUP STEPS (takes ~60 seconds):
- *  1. Go to https://dash.cloudflare.com → Workers & Pages → Create Worker
- *  2. Paste this entire file
- *  3. Go to Settings → Variables → Add the following secrets (NOT plain text vars):
- *       GROQ_API_KEY   = your full gsk_... key
- *       EXTENSION_ID   = your Chrome extension ID (from chrome://extensions)
- *  4. Deploy. Copy the worker URL (e.g. https://summerizer.YOUR-NAME.workers.dev)
- *  5. Paste that URL into background.js as PROXY_URL
- *
- * HOW THE KEY IS PROTECTED:
- *  - GROQ_API_KEY is stored as a Cloudflare secret — encrypted at rest,
- *    never visible after you save it, never in your source code
- *  - Only requests carrying your extension's ID in the origin header are accepted
- *  - Each unique client gets max 30 requests per hour via KV rate limiting
- *  - The Groq key is NEVER sent to the client under any circumstances
- */
+
 
 const MAX_REQUESTS_PER_HOUR = 30;
 const ALLOWED_ACTIONS = ['summarize', 'ask', 'generateQuiz', 'extractDoc'];
@@ -24,26 +6,21 @@ const ALLOWED_ACTIONS = ['summarize', 'ask', 'generateQuiz', 'extractDoc'];
 export default {
   async fetch(request, env) {
 
-    // ── CORS preflight ──────────────────────────────────────────────────────
+
     if (request.method === 'OPTIONS') {
       return corsResponse(null, 204, env);
     }
-
-    // ── Only POST ───────────────────────────────────────────────────────────
     if (request.method !== 'POST') {
       return corsResponse({ error: 'Method not allowed' }, 405, env);
     }
 
-    // ── Validate the request comes from YOUR extension ──────────────────────
-    // Chrome extensions send Origin: chrome-extension://EXTENSION_ID
+
     const origin = request.headers.get('Origin') || '';
     const expectedOrigin = `chrome-extension://${env.EXTENSION_ID}`;
     if (origin !== expectedOrigin) {
       return corsResponse({ error: 'Forbidden' }, 403, env);
     }
 
-    // ── Rate limiting via Cloudflare KV ─────────────────────────────────────
-    // Client fingerprint: hashed combo of IP + a client-supplied install token
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
     const installToken = request.headers.get('X-Install-Token') || 'none';
     const clientKey = `rl:${await sha256(ip + installToken)}`;
@@ -55,7 +32,6 @@ export default {
       }, 429, env);
     }
 
-    // ── Parse body ──────────────────────────────────────────────────────────
     let body;
     try {
       body = await request.json();
@@ -73,7 +49,6 @@ export default {
       return corsResponse({ error: 'messages array required' }, 400, env);
     }
 
-    // ── extractDoc: fetch PDF or Google Docs content server-side ─────────────
     if (action === 'extractDoc') {
       const { url: docUrl, docType } = body;
       if (!docUrl || typeof docUrl !== 'string') {
@@ -81,7 +56,6 @@ export default {
       }
 
       let fetchUrl = docUrl;
-      // For Google Docs, use the plain-text export endpoint
       if (docType === 'gdocs') {
         try {
           const u = new URL(docUrl);
@@ -111,13 +85,11 @@ export default {
       return corsResponse({ success: true, content: docContent }, 200, env);
     }
 
-    // ── Sanitize: strip any attempt to leak the system prompt ───────────────
     const sanitizedMessages = messages.map(m => ({
       role: m.role === 'assistant' ? 'assistant' : 'user',
       content: String(m.content).substring(0, 20000)
     }));
 
-    // ── Forward to Groq — key NEVER leaves this worker ──────────────────────
     let groqResponse;
     try {
       groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
@@ -147,7 +119,6 @@ export default {
 
     const data = await groqResponse.json();
 
-    // ── Return ONLY the content — never the raw Groq response ───────────────
     return corsResponse({
       success: true,
       content: data.choices?.[0]?.message?.content || '',
@@ -156,11 +127,8 @@ export default {
   }
 };
 
-// ── Rate limiter using Cloudflare KV ────────────────────────────────────────
-// KV key holds a JSON array of timestamps for the past hour
 async function checkRateLimit(kv, clientKey) {
   if (!kv) {
-    // KV not bound — fail open in dev, but log it
     console.warn('RATE_LIMIT_KV not bound. Skipping rate limit.');
     return { allowed: true, remaining: MAX_REQUESTS_PER_HOUR };
   }
@@ -174,7 +142,7 @@ async function checkRateLimit(kv, clientKey) {
     if (stored) timestamps = JSON.parse(stored);
   } catch { timestamps = []; }
 
-  // Purge old entries
+
   timestamps = timestamps.filter(t => t > oneHourAgo);
 
   if (timestamps.length >= MAX_REQUESTS_PER_HOUR) {
@@ -185,13 +153,11 @@ async function checkRateLimit(kv, clientKey) {
 
   timestamps.push(now);
 
-  // Store with 2-hour TTL so KV doesn't fill up forever
   await kv.put(clientKey, JSON.stringify(timestamps), { expirationTtl: 7200 });
 
   return { allowed: true, remaining: MAX_REQUESTS_PER_HOUR - timestamps.length };
 }
 
-// ── CORS helper ─────────────────────────────────────────────────────────────
 function corsResponse(body, status, env) {
   const headers = {
     'Content-Type': 'application/json',
@@ -205,7 +171,6 @@ function corsResponse(body, status, env) {
   );
 }
 
-// ── SHA-256 fingerprint (no PII stored, just a hash) ────────────────────────
 async function sha256(text) {
   const buf = await crypto.subtle.digest(
     'SHA-256',
