@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>summeriser.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="popup">
+      <header class="popup-header">
+        <div class="popup-header-left">
+          <h1 class="popup-title">summeriser.</h1>
+          <p class="popup-subtitle">Articles · PDFs · YouTube</p>
+        </div>
+        <div class="header-actions">
+          <button
+            type="button"
+            class="btn-icon btn-settings"
+            id="settingsBtn"
+            title="Settings"
+            aria-label="Open settings"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+              />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div
+        class="settings-backdrop"
+        id="settingsBackdrop"
+        aria-hidden="true"
+        hidden
+      ></div>
+      <aside
+        class="settings-panel"
+        id="settingsPanel"
+        aria-label="Settings"
+        hidden
+      >
+        <div class="settings-panel-header">
+          <h2 class="settings-panel-title">Settings</h2>
+          <button
+            type="button"
+            class="btn-icon btn-close-settings"
+            id="settingsClose"
+            title="Close"
+            aria-label="Close settings"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <div class="settings-panel-scroll">
+          <!-- Appearance -->
+          <section class="settings-section settings-section-0">
+            <h3 class="settings-section-title">Appearance</h3>
+            <div class="settings-row">
+              <span class="settings-label">Theme</span>
+              <button
+                type="button"
+                class="theme-toggle theme-toggle-inline"
+                id="themeToggleSettings"
+                aria-pressed="false"
+                aria-label="Toggle theme"
+              >
+                <span class="theme-label theme-label-light">Light</span>
+                <span class="theme-label theme-label-dark">Dark</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- Summary settings -->
+          <section class="settings-section settings-section-1">
+            <h3 class="settings-section-title">Summary</h3>
+            <div class="settings-row">
+              <label class="settings-label" for="summaryLength"
+                >Summary length</label
+              >
+              <select
+                class="settings-select"
+                id="summaryLength"
+                aria-label="Summary length"
+              >
+                <option value="short">Short</option>
+                <option value="medium" selected>Medium</option>
+                <option value="long">Long</option>
+              </select>
+            </div>
+            <div class="settings-row">
+              <label class="settings-label" for="responseLength"
+                >Response length</label
+              >
+              <select
+                class="settings-select"
+                id="responseLength"
+                aria-label="Response length"
+              >
+                <option value="short">Short</option>
+                <option value="medium" selected>Medium</option>
+                <option value="long">Long</option>
+              </select>
+            </div>
+          </section>
+
+          <!-- About -->
+          <section class="settings-section settings-section-2">
+            <h3 class="settings-section-title">About</h3>
+            <p class="settings-about">
+              summeriser. — AI-powered summaries for articles, PDFs &amp;
+              YouTube.
+            </p>
+            <p class="settings-about" style="margin-top: 8px">
+              <a href="https://www.summeriser.dev/privacy.html" target="_blank" class="settings-link">Privacy Policy</a>
+            </p>
+            <p class="settings-about" style="margin-top: 8px">
+              📄 <strong>Google Docs:</strong> Set sharing to "Anyone with the
+              link can view" for summaries to work.
+            </p>
+          </section>
+        </div>
+      </aside>
+
+      <main class="popup-main">
+        <div class="page-type" id="pageType" aria-live="polite">
+          Detecting page…
+        </div>
+
+        <!-- Tab bar — appears after first summary -->
+        <nav class="tab-bar" id="tabBar" hidden aria-label="Sections">
+          <button
+            type="button"
+            class="tab-btn tab-btn-active"
+            id="tabSummary"
+            data-tab="summary"
+          >
+            Summary
+          </button>
+          <button type="button" class="tab-btn" id="tabQa" data-tab="qa">
+            Q&amp;A
+          </button>
+          <button type="button" class="tab-btn" id="tabQuiz" data-tab="quiz">
+            Quiz
+          </button>
+        </nav>
+
+        <!-- Summary panel -->
+        <div class="tab-panel" id="panelSummary" hidden>
+          <div
+            class="summary-box"
+            id="summaryContent"
+            aria-label="Summary text"
+            aria-live="polite"
+          ></div>
+          <textarea
+            class="summary-raw"
+            id="summaryRaw"
+            hidden
+            aria-hidden="true"
+          ></textarea>
+        </div>
+
+        <!-- Q&A panel -->
+        <div class="tab-panel" id="panelQa" hidden>
+          <div
+            class="qa-messages"
+            id="qaMessages"
+            aria-live="polite"
+            aria-label="Q&A conversation"
+          ></div>
+        </div>
+
+        <!-- Quiz panel -->
+        <div class="tab-panel" id="panelQuiz" hidden>
+          <div class="quiz-idle" id="quizIdle">
+            <p class="quiz-idle-text">
+              Test your understanding with AI-generated multiple choice
+              questions.
+            </p>
+            <button
+              type="button"
+              class="btn-generate-quiz"
+              id="generateQuizBtn"
+            >
+              Generate Quiz
+            </button>
+          </div>
+          <div class="quiz-loading" id="quizLoading" hidden>
+            <div class="quiz-spinner"></div>
+            <p class="quiz-loading-text">Generating questions…</p>
+          </div>
+          <div class="quiz-questions" id="quizQuestions" hidden></div>
+          <div class="quiz-results" id="quizResults" hidden>
+            <div class="quiz-score-wrap">
+              <div class="quiz-score-circle" id="quizScoreCircle"></div>
+            </div>
+            <p class="quiz-results-msg" id="quizResultsMsg"></p>
+            <button type="button" class="btn-retake-quiz" id="retakeQuizBtn">
+              Try Again
+            </button>
+          </div>
+        </div>
+
+        <div class="status" id="status" aria-live="polite" hidden></div>
+        <div class="main-spacer" aria-hidden="true"></div>
+
+        <footer class="popup-footer">
+          <div class="footer-summarize-wrap" id="footerSummarizeWrap">
+            <button
+              type="button"
+              class="btn-summarize"
+              id="summarizeBtn"
+              disabled
+            >
+              <span class="btn-text">Summarize</span>
+            </button>
+          </div>
+          <div class="question-bar-wrap" id="questionBarWrap" hidden>
+            <form class="question-bar" id="questionForm" role="search">
+              <input
+                type="text"
+                class="question-input"
+                id="questionInput"
+                placeholder="Ask about this summary…"
+                autocomplete="off"
+                aria-label="Ask a question about the summary"
+              />
+              <button
+                type="submit"
+                class="question-send"
+                id="questionSend"
+                aria-label="Send question"
+              >
+                <span class="question-send-icon">→</span>
+              </button>
+            </form>
+          </div>
+          <div class="footer-quiz-wrap" id="footerQuizWrap" hidden></div>
+        </footer>
+      </main>
+    </div>
+    <script src="utils.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
